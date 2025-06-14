@@ -1,0 +1,35 @@
+<div class="card m-4 mx-auto" style="width: 600px;">
+    <div class ="card-header" >
+        <ul class="nav nav-pills card-header-pills" >
+            <li class="nav-item" *ngIf="!connected">
+                <button class="btn btn-success" type="button" (click)="connect()">Conectar</button>
+            </li>
+            <li class="nav-item" *ngIf="connected">
+                <button class="btn btn-warning" type="button"(click)="deconnect()">Desconectar</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class ="card-body" style="overflow-y: scroll; height: 360px;" *ngIf="connected">
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let message of messages">
+                
+                {{message.date| date:'HH:mm' }}: {{message.text}}
+            </li>
+        </ul>
+    </div>
+
+    <div class ="card-footer " *ngIf="connected" >
+        <form (ngSubmit)="onSendMessage()">
+            <div class="row" >
+                <div class="col d-flex justify-content-center">
+                    <input class="form-control" name="text" [(ngModel)]="message.text">
+                </div>
+                <div class="col" style="text-align: center;">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
