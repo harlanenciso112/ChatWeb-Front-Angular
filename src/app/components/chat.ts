@@ -37,6 +37,12 @@ export class Chat implements OnInit {
           message.date = new Date(message.date)
           this.messages.push(message);
         })
+
+        this.message.type = "NEW_USER";
+        this.client.publish({
+          destination: '/app/message',
+          body: JSON.stringify(this.message)
+        })
       }
     
     this.client.onDisconnect = (frame) => {
@@ -44,7 +50,6 @@ export class Chat implements OnInit {
       this.message = new Message();
       this.messages = [];
       console.log(`Desconectados: ${this.client.connected} : ${frame}`)
-
     }
   }
 
@@ -57,6 +62,7 @@ export class Chat implements OnInit {
   }
 
   onSendMessage(){
+    this.message.type  = "MESSAGE"
     this.client.publish({
       destination: '/app/message',
       body: JSON.stringify(this.message)

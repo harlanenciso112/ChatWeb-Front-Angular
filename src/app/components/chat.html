@@ -1,8 +1,11 @@
 <div class="card m-4 mx-auto" style="width: 600px;">
     <div class ="card-header" >
         <ul class="nav nav-pills card-header-pills" >
+            <li class="nav-item me-2" *ngIf="!connected">
+                <input [(ngModel)]="message.username" class="form-control" placeholder="Tu Usuario" name="username">
+            </li>
             <li class="nav-item" *ngIf="!connected">
-                <button class="btn btn-success" type="button" (click)="connect()">Conectar</button>
+                <button class="btn btn-success" type="button" (click)="connect()"[disabled]="!message.username">Conectar</button>
             </li>
             <li class="nav-item" *ngIf="connected">
                 <button class="btn btn-warning" type="button"(click)="deconnect()">Desconectar</button>
@@ -11,10 +14,14 @@
     </div>
 
     <div class ="card-body" style="overflow-y: scroll; height: 360px;" *ngIf="connected">
-        <ul class="list-group">
-            <li class="list-group-item" *ngFor="let message of messages">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item list-group-item-light" *ngFor="let message of messages">
+                @if (message.type == "NEW_USER"){
+                    {{message.date| date:'shortTime' }} {{message.text}} &#64;{{message.username}}
+                }@else if(message.type == "MESSAGE"){
+                    {{message.date| date:'shortTime' }} <br> &#64;{{message.username}}: {{message.text}}
+                }
                 
-                {{message.date| date:'HH:mm' }}: {{message.text}}
             </li>
         </ul>
     </div>
@@ -23,9 +30,9 @@
         <form (ngSubmit)="onSendMessage()">
             <div class="row" >
                 <div class="col d-flex justify-content-center">
-                    <input class="form-control" name="text" [(ngModel)]="message.text">
+                    <input class="form-control" name="text" [(ngModel)]="message.text" placeholder="Escribe un mensaje...">
                 </div>
-                <div class="col" style="text-align: center;">
+                <div class="col">
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </div>
             </div>
