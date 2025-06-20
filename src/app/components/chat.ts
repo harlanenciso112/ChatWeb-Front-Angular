@@ -51,6 +51,17 @@ export class Chat implements OnInit {
       this.messages = [];
       console.log(`Desconectados: ${this.client.connected} : ${frame}`)
     }
+    // Hacer pruebas desde la consola
+    //(window as any).chatComponent = this;
+  }
+
+  private userDisconnect(): void{
+    this.message.type = "USER_DISCONNECT";
+    this.client.publish({
+      destination: '/app/message',
+      body: JSON.stringify(this.message)
+    })
+
   }
 
   connect(): void{
@@ -58,6 +69,7 @@ export class Chat implements OnInit {
   }
 
   deconnect(): void{
+    this.userDisconnect();
     this.client.deactivate();
   }
 
