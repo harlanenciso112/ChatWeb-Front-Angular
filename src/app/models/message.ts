@@ -3,4 +3,5 @@ export class Message{
     date!: Date;
     username: string = '';
     type: string = '';
+    color!: string;
 }

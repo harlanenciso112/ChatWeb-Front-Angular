@@ -6,7 +6,7 @@
                 <input [(ngModel)]="message.username" class="form-control" placeholder="Tu Usuario" name="username">
             </li>
             <li class="nav-item" *ngIf="!connected">
-                <button class="btn btn-success" type="button" (click)="connect()"[disabled]="!message.username">Conectar</button>
+                <button class="btn btn-success" type="button" (click)="connect()" [disabled]="!message.username">Conectar</button>
             </li>
             <li class="nav-item" *ngIf="connected">
                 <button class="btn btn-warning" type="button"(click)="deconnect()">Desconectar</button>
@@ -18,9 +18,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item list-group-item-light" *ngFor="let message of messages">
                 @if (message.type == "NEW_USER"){
-                    {{message.date| date:'shortTime' }} {{message.text}} &#64;{{message.username}}
+                    {{message.date| date:'shortTime' }} {{message.text}} <span [ngStyle]="{'color': message.color}">&#64;{{message.username}}</span>
                 }@else if(message.type == "MESSAGE"){
-                    {{message.date| date:'shortTime' }} <br> &#64;{{message.username}}: {{message.text}}
+                    {{message.date| date:'shortTime' }} <br> <span [ngStyle]="{'color': message.color}">&#64;{{message.username}}</span>: {{message.text}}
                 }@else if((message.type == "USER_DISCONNECT")){
                      &#64;{{message.username}}: {{message.text}}
                 }
@@ -32,13 +32,17 @@
         <form (ngSubmit)="onSendMessage()">
             <div class="row" >
                 <div class="col d-flex justify-content-center">
-                    <input class="form-control" name="text" [(ngModel)]="message.text" placeholder="Escribe un mensaje...">
+                    <input class="form-control" 
+                    name="text" 
+                    [(ngModel)]="message.text" 
+                    placeholder="Escribe un mensaje..."
+                    (keyup)="onWritingEvent()">
                 </div>
                 <div class="col">
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </div>
             </div>
         </form>
+        <div>{{writing}}</div>
     </div>
-
 </div>

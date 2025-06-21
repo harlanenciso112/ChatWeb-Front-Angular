@@ -19,6 +19,8 @@ export class Chat implements OnInit {
   messages: Message[] = [];
   message: Message = new Message();
 
+  writing!: string;
+
   ngOnInit(): void {
       this.client = new Stomp.Client({
         brokerURL: undefined,
@@ -29,13 +31,23 @@ export class Chat implements OnInit {
     );
 
     this.client.onConnect = (frame) => {
+        
         this.connected = true;
         console.log(`Conectados: ${this.client.connected} : ${frame}`)
         this.client.subscribe('/chat/message', e =>{
           console.log(e.body)
           let message: Message = JSON.parse(e.body) as Message;
           message.date = new Date(message.date)
+          //Asignar color al nombre
+          if(this.message.username == message.username && !this.message.color && message.type == "NEW_USER"){
+            this.message.color = message.color;
+          }
           this.messages.push(message);
+        })
+
+        this.client.subscribe('/chat/writing', event => {
+          this.writing = event.body;
+          setTimeout(() => this.writing = '', 3000)
         })
 
         this.message.type = "NEW_USER";
@@ -61,10 +73,10 @@ export class Chat implements OnInit {
       destination: '/app/message',
       body: JSON.stringify(this.message)
     })
-
   }
 
   connect(): void{
+    this.message.type = ''; 
     this.client.activate();
   }
 
@@ -80,5 +92,12 @@ export class Chat implements OnInit {
       body: JSON.stringify(this.message)
     });
     this.message.text = '';
+  }
+
+  onWritingEvent(): void{
+    this.client.publish({
+      destination: '/app/writing',
+      body: this.message.username
+    })
   }
 }
